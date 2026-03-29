@@ -1115,7 +1115,7 @@ async function init() {
   const result = await Promise.race([sessionPromise, timeoutPromise]);
 
   if (result.timedOut) {
-    window.location.href = 'https://nextus.world/login.html?redirect=' + encodeURIComponent(window.location.href);
+    console.warn("[AuthGuard] Timed out — failing open.");
     return;
   }
 
