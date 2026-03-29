@@ -1115,13 +1115,13 @@ async function init() {
   const result = await Promise.race([sessionPromise, timeoutPromise]);
 
   if (result.timedOut) {
-    window.location.href = 'https://nextus.world/login?redirect=' + encodeURIComponent(window.location.href);
+    window.location.href = 'https://nextus.world/login.html?redirect=' + encodeURIComponent(window.location.href);
     return;
   }
 
   const session = result.data?.session;
   if (!session?.user) {
-    window.location.href = 'https://nextus.world/login?redirect=' + encodeURIComponent(window.location.href);
+    window.location.href = 'https://nextus.world/login.html?redirect=' + encodeURIComponent(window.location.href);
     return;
   }
 
@@ -1132,7 +1132,7 @@ async function init() {
       await loadProfileData(newSession.user);
     }
     if (event === 'SIGNED_OUT') {
-      window.location.href = 'https://nextus.world/login?redirect=' + encodeURIComponent(window.location.href);
+      window.location.href = 'https://nextus.world/login.html?redirect=' + encodeURIComponent(window.location.href);
     }
   });
 }
