@@ -765,6 +765,11 @@
     </div>
   </div>
 
+
+  <div class="signout-wrap">
+    <span class="signout-note">nextus.world</span>
+    <button class="signout-btn" onclick="signOut()">Sign out</button>
+  </div>
 </div><!-- end page -->
 
 <script>
@@ -871,10 +876,7 @@ function renderIdentity(data) {
 
   const domainName = NEXTUS_DOMAIN_NAMES[data.domain] || data.domain;
   const goal       = HORIZON_GOALS[data.domain] || '';
-  const systemStmt = data.identity_statement_system
-    || 'I am a ' + data.archetype + ' in ' + domainName + ' at the ' + data.scale + ' scale, working toward a world where ' + goal.charAt(0).toLowerCase() + goal.slice(1);
-  // User version leads; system version is the fallback
-  const stmt = data.identity_statement_user || systemStmt;
+  const stmt       = 'I am a ' + data.archetype + ' in ' + domainName + ' at the ' + data.scale + ' scale, working toward a world where ' + goal.charAt(0).toLowerCase() + goal.slice(1);
 
   content.innerHTML = `
     <div class="identity-coords">
@@ -1090,6 +1092,13 @@ function loadNotes() {
   });
 }
 
+
+// ── SIGN OUT ──────────────────────────────────────────────────────────────────
+async function signOut() {
+  await sb.auth.signOut();
+  window.location.href = 'https://nextus.world/index.html';
+}
+
 // ── BOOT ──────────────────────────────────────────────────────────────────────
 // ── SUPABASE ──────────────────────────────────────────────────────────────────
 const SB_URL = 'https://tphbpwzozkskytoichho.supabase.co';
@@ -1197,19 +1206,19 @@ async function loadProfileData(user) {
 async function saveHorizonUser(value) {
   const { data: { session } } = await sb.auth.getSession();
   if (!session?.user) return;
-  // Find most recent completed session ID, then update by ID
-  const { data: rows } = await sb
-    .from('orienteering_sessions')
-    .select('id')
+  await sb.from('orienteering_sessions')
+    .update({ horizon_goal_user: value })
     .eq('user_id', session.user.id)
     .eq('complete', true)
     .order('updated_at', { ascending: false })
     .limit(1);
-  if (rows?.[0]?.id) {
-    await sb.from('orienteering_sessions')
-      .update({ horizon_goal_user: value })
-      .eq('id', rows[0].id);
-  }
+}
+
+
+// ── SIGN OUT ──────────────────────────────────────────────────────────────────
+async function signOut() {
+  await sb.auth.signOut();
+  window.location.href = 'https://nextus.world/index.html';
 }
 
 // ── BOOT ──────────────────────────────────────────────────────────────────────
